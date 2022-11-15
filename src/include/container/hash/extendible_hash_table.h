@@ -23,6 +23,7 @@
 #include <utility>
 #include <vector>
 
+#include "common/logger.h"
 #include "container/hash/hash_table.h"
 
 namespace bustub {
@@ -105,6 +106,8 @@ class ExtendibleHashTable : public HashTable<K, V> {
    */
   auto Remove(const K &key) -> bool override;
 
+  auto PrintAllElement();
+
   /**
    * Bucket class for each hash table bucket that the directory points to.
    */
@@ -134,6 +137,8 @@ class ExtendibleHashTable : public HashTable<K, V> {
      */
     auto Find(const K &key, V &value) -> bool;
 
+    auto FindOnlyByKey(const K &key) -> bool;
+    auto PrintElement();
     /**
      *
      * TODO(P1): Add implementation
@@ -162,6 +167,7 @@ class ExtendibleHashTable : public HashTable<K, V> {
     size_t size_;
     int depth_;
     std::list<std::pair<K, V>> list_;
+    std::mutex latch_;
   };
 
  private:

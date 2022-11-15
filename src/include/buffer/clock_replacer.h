@@ -18,8 +18,25 @@
 
 #include "buffer/replacer.h"
 #include "common/config.h"
+#include "unordered_map"
 
 namespace bustub {
+
+struct PageNode {
+  frame_id_t index;
+  bool ref_flag;
+  bool pin_flag;
+  PageNode() {
+    index = 0;
+    ref_flag = false;
+    pin_flag = true;
+  }
+  explicit PageNode(size_t page_id) {
+    index = page_id;
+    ref_flag = false;
+    pin_flag = true;
+  }
+};
 
 /**
  * ClockReplacer implements the clock replacement policy, which approximates the Least Recently Used policy.
@@ -47,6 +64,10 @@ class ClockReplacer : public Replacer {
 
  private:
   // TODO(student): implement me!
+  std::vector<PageNode> page_vec;
+  size_t max_size;
+  size_t current_pos;
+  std::mutex mutex_;
 };
 
 }  // namespace bustub

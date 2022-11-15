@@ -20,7 +20,6 @@
 
 #include "common/config.h"
 #include "common/macros.h"
-
 namespace bustub {
 
 /**
@@ -52,7 +51,7 @@ class LRUKReplacer {
    *
    * @brief Destroys the LRUReplacer.
    */
-  ~LRUKReplacer() = default;
+  ~LRUKReplacer();
 
   /**
    * TODO(P1): Add implementation
@@ -71,6 +70,8 @@ class LRUKReplacer {
    * @return true if a frame is evicted successfully, false if no frames can be evicted.
    */
   auto Evict(frame_id_t *frame_id) -> bool;
+
+  void PrintAll();
 
   /**
    * TODO(P1): Add implementation
@@ -132,14 +133,34 @@ class LRUKReplacer {
    */
   auto Size() -> size_t;
 
+  void AddToPageMap(frame_id_t frame_id);
+
+  struct PNode {
+    struct PNode *pre_;
+    struct PNode *next_;
+    frame_id_t value_;
+    size_t visit_;
+    bool is_evictable_;
+    PNode() { pre_ = nullptr, next_ = nullptr, value_ = 0, is_evictable_ = true, visit_ = 1; }
+    explicit PNode(frame_id_t v) { pre_ = nullptr, next_ = nullptr, value_ = v, is_evictable_ = true, visit_ = 1; }
+  };
+
  private:
   // TODO(student): implement me! You can replace these member variables as you like.
   // Remove maybe_unused if you start using them.
-  [[maybe_unused]] size_t current_timestamp_{0};
-  [[maybe_unused]] size_t curr_size_{0};
-  [[maybe_unused]] size_t replacer_size_;
-  [[maybe_unused]] size_t k_;
+  //  size_t current_timestamp_{0};
+  // 当前多少页
+  size_t curr_size_{0};
+  // 当前可用的页
+  size_t evictable_size_{0};
+  // 总的页数
+  size_t replacer_size_;
+  size_t k_;
   std::mutex latch_;
+
+  PNode *page_head_;
+  PNode *page_tail_;
+  std::unordered_map<frame_id_t, PNode *> page_map_;
 };
 
 }  // namespace bustub
