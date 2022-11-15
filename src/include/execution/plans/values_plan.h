@@ -33,21 +33,22 @@ class ValuesPlanNode : public AbstractPlanNode {
   /**
    * Construct a new ValuesPlanNode instance.
    * @param output The output schema of this values plan node
-   * @param child The child plan node
+   * @param values The values produced by this plan node
    */
-  explicit ValuesPlanNode(const Schema *output, std::vector<std::vector<const AbstractExpression *>> values)
-      : AbstractPlanNode(output, {}), values_(std::move(values)) {}
+  explicit ValuesPlanNode(SchemaRef output, std::vector<std::vector<AbstractExpressionRef>> values)
+      : AbstractPlanNode(std::move(output), {}), values_(std::move(values)) {}
 
   /** @return The type of the plan node */
   auto GetType() const -> PlanType override { return PlanType::Values; }
 
-  auto GetValues() const -> const std::vector<std::vector<const AbstractExpression *>> & { return values_; }
+  auto GetValues() const -> const std::vector<std::vector<AbstractExpressionRef>> & { return values_; }
+
+  BUSTUB_PLAN_NODE_CLONE_WITH_CHILDREN(ValuesPlanNode);
+
+  std::vector<std::vector<AbstractExpressionRef>> values_;
 
  protected:
   auto PlanNodeToString() const -> std::string override { return fmt::format("Values {{ rows={} }}", values_.size()); }
-
- private:
-  std::vector<std::vector<const AbstractExpression *>> values_;
 };
 
 }  // namespace bustub
